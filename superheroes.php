@@ -65,8 +65,30 @@ $superheroes = [
 
 ?>
 
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
+<?php
+ 
+if ($_SERVER['REQUEST_METHOD'] == 'GET'){
+
+        $newstr = filter_input(INPUT_GET, 'superhero', FILTER_SANITIZE_STRING);
+        $nameindex = array_search($newstr, array_column($superheroes, 'name'));
+        $aliasindex = array_search($newstr, array_column($superheroes, 'alias'));
+
+        if (empty($newstr)){
+            foreach ($superheroes as $superhero)
+                echo "<ul><li>".$superhero['alias']."</li></ul>";
+        }
+        elseif (!empty($newstr) && $nameindex != ""){
+            echo "<h3>".$superheroes[$nameindex]['alias']."</h3>";
+            echo "<h4>".$superheroes[$nameindex]['name']."</h4>";
+            echo "<p>".$superheroes[$nameindex]['biography']."</p>";
+        }
+        elseif (!empty($newstr) && $aliasindex != ""){
+            echo "<h3>".$superheroes[$aliasindex]['alias']."</h3>";
+            echo "<h4>".$superheroes[$aliasindex]['name']."</h4>";
+            echo "<p>".$superheroes[$aliasindex]['biography']."</p>";
+        }
+        else{
+            echo '<strong>SUPERHERO NOT FOUND</span>';
+        }    
+}
+?>
